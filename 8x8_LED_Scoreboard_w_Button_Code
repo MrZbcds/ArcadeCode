@@ -1,0 +1,75 @@
+#include <LedControl.h>
+
+int DIN = 4;
+int CS =  3;
+int CLK = 2;
+int BUTTON = 9; // Button pin
+int tens;
+int units;
+int count = 0; // Start at 0
+
+// Digit Byte Arrays (0-9)
+byte zero[] =  {B00111000, B01000100, B01000100, B00111000};
+byte one[] =   {B00000100, B01111100, B01000100, B00000000};
+byte two[] =   {B01110100, B01010100, B01011100, B00000000};
+byte three[] = {B01111100, B01010100, B01000100, B00000000};
+byte four[] =  {B01111100, B00010000, B01110000, B00000000};
+byte five[] =  {B01011100, B01010100, B01110100, B00000000};
+byte six[] =   {B01011100, B01010100, B01111100, B00000000};
+byte seven[] = {B01100000, B01010000, B01001100, B00000000};
+byte eight[] = {B01111100, B01010100, B01111100, B00000000};
+byte nine[] =  {B01111100, B01010000, B01110000, B00000000};
+
+// LED Control Setup
+LedControl lc = LedControl(DIN, CLK, CS, 0);
+
+void setup() {
+  pinMode(BUTTON, INPUT_PULLUP); // Set button pin as input with internal pull-up resistor
+  lc.shutdown(0, false);
+  lc.setIntensity(0, 8);
+  lc.clearDisplay(0);
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (digitalRead(BUTTON) == LOW) { // Detect button press
+    count = count+5;
+    displayNumber(count);
+    Serial.print("Displaying: ");
+    Serial.println(count);
+    delay(200); // Debounce delay
+  }
+}
+
+void displayNumber(int num) {
+  lc.clearDisplay(0);
+  tens = num / 10;
+  units = num % 10;
+
+  // Display tens place
+  setDigit(4, getDigitArray(tens));
+  // Display units place
+  setDigit(0, getDigitArray(units));
+}
+
+void setDigit(int startRow, byte digit[]) {
+  for (int c = 0; c < 4; c++) {
+    lc.setRow(0, startRow + c, digit[c]);
+  }
+}
+
+byte* getDigitArray(int digit) {
+  switch (digit) {
+    case 0: return zero;
+    case 1: return one;
+    case 2: return two;
+    case 3: return three;
+    case 4: return four;
+    case 5: return five;
+    case 6: return six;
+    case 7: return seven;
+    case 8: return eight;
+    case 9: return nine;
+    default: return zero;
+  }
+}
