@@ -1,0 +1,24 @@
+// Define the IR sensor pin and initialize variables
+const int irSensorPin = 2; // Connect the IR sensor output to digital pin 2
+int counter = 0;
+bool lastState = LOW;
+
+void setup() {
+  Serial.begin(9600); // Start serial communication for debugging
+  pinMode(irSensorPin, INPUT);
+  Serial.println("IR Sensor Counter Initialized");
+}
+
+void loop() {
+  bool currentState = digitalRead(irSensorPin);
+
+  // Check for state change from LOW to HIGH
+  if (currentState == HIGH && lastState == LOW) {
+    counter++;
+    Serial.print("Object detected! Current count: ");
+    Serial.println(counter);
+    delay(200); // Debounce delay to avoid multiple counts
+  }
+
+  lastState = currentState; // Update the last state
+}
