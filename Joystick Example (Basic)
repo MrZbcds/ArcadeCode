@@ -1,0 +1,26 @@
+// Define joystick pins for X and Y axis
+const int joystickX = A0; // X-axis pin
+const int joystickY = A1; // Y-axis pin
+
+void setup() {
+  // Start serial communication for debugging
+  Serial.begin(9600);
+  
+  // Initialize joystick pins
+  pinMode(joystickX, INPUT);
+  pinMode(joystickY, INPUT);
+}
+
+void loop() {
+  // Read the joystick values for X and Y axis
+  int xValue = analogRead(joystickX);
+  int yValue = analogRead(joystickY);
+
+  // Print joystick values for debugging
+  Serial.print("X-axis Value: ");
+  Serial.print(xValue); // Print X-axis value (0 to 1023)
+  Serial.print("  Y-axis Value: ");
+  Serial.println(yValue); // Print Y-axis value (0 to 1023)
+
+  delay(100); // Small delay to prevent flooding the serial monitor
+}
