@@ -1,47 +1,58 @@
+
 #include <Servo.h> // Include the Servo library
 
 // Define the joystick pin for X-axis
 const int joystickX = A0; // X-axis pin
 
-// Define pin 3 as output
+
+// Define pin 3 as output to give the joystic power
 const int pin3 = 3; // Pin 3 for output
 
-// Create a Servo object
-Servo myServo;
+// Create a "Servo object" that use the commands from the Servo.h library. 
+// Create one for the X motion of the joystick.
+Servo XServo;
+
+
 
 void setup() {
   // Start serial communication for debugging
   Serial.begin(9600);
-  
-  // Initialize pin 3 as output and set it HIGH
-  pinMode(pin3, OUTPUT);
-  digitalWrite(pin3, HIGH); // Set pin 3 HIGH
 
   // Initialize joystick pin
   pinMode(joystickX, INPUT);
 
+
+
   // Attach the servo to a pin (e.g., pin 9)
-  myServo.attach(9); // Change the pin if necessary
+  XServo.attach(9); // Change the pin if necessary
+
 
   // Start the servo at the middle (90 degrees)
-  myServo.write(90);
+  XServo.write(90);
+
+// Turn on pin 3 to give power to the joystick
+  pinMode(pin3, OUTPUT);
+  digitalWrite(pin3,HIGH);
 }
 
 void loop() {
   // Read the X-axis joystick value
   int xValue = analogRead(joystickX);
 
+
   // Map the joystick X-axis value (0-1023) to the servo range (0-180)
-  int servoPosition = map(xValue, 0, 1023, 0, 180);
+  int xservoPosition = map(xValue, 0, 1023, 0, 180);
+
 
   // Set the servo position based on the joystick X-axis value
-  myServo.write(servoPosition);
+  XServo.write(xservoPosition);
+
 
   // Print joystick and servo position values for debugging
   Serial.print("Joystick X Value: ");
   Serial.print(xValue);  // Print joystick X value (0 to 1023)
   Serial.print("  Servo Position: ");
-  Serial.println(servoPosition);  // Print mapped servo position (0 to 180)
+  Serial.println(xservoPosition);  // Print mapped servo position (0 to 180)
 
   delay(15); // Delay for servo to reach the position
 }
