@@ -1,40 +1,42 @@
-//Library of commands for LCD 
-#include <Adafruit_LiquidCrystal.h> 
+#include <Adafruit_LiquidCrystal.h> //Library of commands for LCD 
+
 
 const int irSensorPin = 9; // Connect the IR sensor output to digital pin 9
 bool lastState = LOW; // create a variable "lastState" to record the last reading from the IR sensor
 
 int counter = 0; // create a variable "counter" that will tell us how many times the IR sensor has been triggered
 
-Adafruit_LiquidCrystal lcd_1(0); // 
+Adafruit_LiquidCrystal lcd_1(0); // Since we are using the LCD from Adafruit we need to "make" an object that is the LCD
 
 void setup()
 {
-  lcd_1.begin(16, 2);
-  lcd_1.print("IR Sensor");
+  lcd_1.begin(16, 2); // Tells the lcd that it is 16 characters and two rows in size
+  lcd_1.print("IR Sensor"); // Prints "IR Sensor" on the first row of the LCD
   Serial.begin(9600); // Start serial communication for debugging
-  Serial.println("IR Sensor ");
+  Serial.println("IR Sensor "); //Prints "IR Sensor" to the serial monitor for debugging
   
-  pinMode(irSensorPin, INPUT);
-  // We need power for the IR Sensor so pin 7 is our 5V power source.
+  pinMode(irSensorPin, INPUT); // Sets the irSensorPin to read if it gets a signal
+ 
+  // We need power for the IR Sensor so pin 7 is our 5V power source and we turn it ON.
   pinMode(7,OUTPUT);
   digitalWrite(7,HIGH);
 }
 
 void loop()
 {
-   bool currentState = digitalRead(irSensorPin);
+   bool currentState = digitalRead(irSensorPin); // Read the IR Sensor state and store it in a variable called "currentState"
 
   // Check for state change from LOW to HIGH
   if (currentState == HIGH && lastState == LOW) {
-  lcd_1.setCursor(0, 1);
-  lcd_1.print(counter);
-  lcd_1.setBacklight(1);
+  lcd_1.setCursor(0, 1); // Put the cursor at character 0 and row 1 (the 2nd row - the first row is 0)
+  lcd_1.print(counter); // Display the "counter" on the LCD
+  lcd_1.setBacklight(1); // Set the brightness to max
     
-  Serial.print("Object detected! Current count: ");
+  // Display the information on the serial monitor for debugging  
+  Serial.print("Object detected! Current count: "); // 
   Serial.println(counter);
   delay(300); // Debounce delay to avoid multiple counts
-  counter++;
+  counter++; // Add 1 to the the variable "counter"
 
   }
   
