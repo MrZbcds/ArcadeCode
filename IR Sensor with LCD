@@ -1,0 +1,43 @@
+//Library of commands for LCD 
+#include <Adafruit_LiquidCrystal.h> 
+
+const int irSensorPin = 9; // Connect the IR sensor output to digital pin 9
+bool lastState = LOW; // create a variable "lastState" to record the last reading from the IR sensor
+
+int counter = 0; // create a variable "counter" that will tell us how many times the IR sensor has been triggered
+
+Adafruit_LiquidCrystal lcd_1(0); // 
+
+void setup()
+{
+  lcd_1.begin(16, 2);
+  lcd_1.print("IR Sensor");
+  Serial.begin(9600); // Start serial communication for debugging
+  Serial.println("IR Sensor ");
+  
+  pinMode(irSensorPin, INPUT);
+  // We need power for the IR Sensor so pin 7 is our 5V power source.
+  pinMode(7,OUTPUT);
+  digitalWrite(7,HIGH);
+}
+
+void loop()
+{
+   bool currentState = digitalRead(irSensorPin);
+
+  // Check for state change from LOW to HIGH
+  if (currentState == HIGH && lastState == LOW) {
+  lcd_1.setCursor(0, 1);
+  lcd_1.print(counter);
+  lcd_1.setBacklight(1);
+    
+  Serial.print("Object detected! Current count: ");
+  Serial.println(counter);
+  delay(300); // Debounce delay to avoid multiple counts
+  counter++;
+
+  }
+  
+  lastState = currentState; // Update the last state
+
+}
