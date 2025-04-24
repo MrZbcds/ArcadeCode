@@ -1,14 +1,37 @@
-#include <LedControl.h>
+#include <LedControl.h> // This is the library that will control the 8x8 LED Screen
 
-int DIN = 4;
-int CS =  3;
-int CLK = 2;
+// These are the connections you should make from the 8x8 Screen to the Arduino pins
+int DIN = 12;
+int CS =  11;
+int CLK = 10;
+
+
 int BUTTON = 9; // Button pin
+
+//This gives us the tens place digit and the ones place digit
 int tens;
-int units;
+int ones;
+
 int count = 0; // Start at 0
 
-// Digit Byte Arrays (0-9)
+// This sets the value of each button push. If you pushed the button each time a goal
+// was scored this would be set to 1.
+int value = 5;
+
+/* Digit Byte Arrays (0-9) These display what the numbers look like on the screen. 
+   Each 0 is off and each 1 is on. The "B" is above the top row and the 0s and 1s are the column underneath.
+   Each "B..." represents one column so each number is made of 4 columns. 
+   So Zero looks like:
+   B B B B
+   0 0 0 0
+   0 1 1 0
+   1 0 0 1
+   1 0 0 1
+   1 0 0 1
+   0 1 1 0
+   0 0 0 0 
+   0 0 0 0
+*/
 byte zero[] =  {B00111000, B01000100, B01000100, B00111000};
 byte one[] =   {B00000100, B01111100, B01000100, B00000000};
 byte two[] =   {B01110100, B01010100, B01011100, B00000000};
@@ -21,43 +44,59 @@ byte eight[] = {B01111100, B01010100, B01111100, B00000000};
 byte nine[] =  {B01111100, B01010000, B01110000, B00000000};
 
 // LED Control Setup
-LedControl lc = LedControl(DIN, CLK, CS, 0);
+LedControl lc = LedControl(DIN, CLK, CS, 0);  // The zero means there is only one 8x8 screen
 
 void setup() {
   pinMode(BUTTON, INPUT_PULLUP); // Set button pin as input with internal pull-up resistor
-  lc.shutdown(0, false);
+  
+  // This sets up and clears the screen
+  lc.shutdown(0, false); 
   lc.setIntensity(0, 8);
   lc.clearDisplay(0);
-  Serial.begin(9600);
+  // Display tens place
+  setDigit(4, getDigitArray(0));
+  // Display ones place
+  setDigit(0, getDigitArray(0));
+
+  Serial.begin(9600); // Starts the serial monitor for debuging
 }
 
 void loop() {
   if (digitalRead(BUTTON) == LOW) { // Detect button press
-    count = count+5;
-    displayNumber(count);
+    count = count+value; // increase the score by the set value
+    displayNumber(count); // display the count using the void displayNumber function
+    
+    //print the count to the serial display
     Serial.print("Displaying: ");
     Serial.println(count);
     delay(200); // Debounce delay
   }
 }
 
-void displayNumber(int num) {
-  lc.clearDisplay(0);
-  tens = num / 10;
-  units = num % 10;
+// This is a function called displayNumber that tells the Arduino how to display the number on the 8x8. 
+// "num" is the value passed to it when it was used in the loop. In the loop, the value was called "count"
+// but in this function, it needs a new name, so we call it "num"
+void displayNumber(int num) 
+  { 
 
-  // Display tens place
+  lc.clearDisplay(0); // clears the display just in case there is something already on it.
+  tens = num / 10; // sets the 10s digit by dividing "num" by 10 and getting that digit. like 23 / 10 = 2. 
+  ones = num % 10; // sets the 1s digit by dividing "num" by 10 and getting the remainder. like 23 / 10 = 3. 
+
+  // Set tens place as 0 to start
   setDigit(4, getDigitArray(tens));
-  // Display units place
-  setDigit(0, getDigitArray(units));
+  // Set ones place as 0 to start
+  setDigit(0, getDigitArray(ones));
 }
 
-void setDigit(int startRow, byte digit[]) {
+// SetDigit displays the digits in the right place on the 8x8. It has the 10s digit start at column 0 (first one) and the ones start at row 4 (5th one).
+void setDigit(int startColumn, byte digit[]) {
   for (int c = 0; c < 4; c++) {
-    lc.setRow(0, startRow + c, digit[c]);
+    lc.setRow(0, startColumn + c, digit[c]);
   }
 }
 
+// This is to help get the pattern (array) of 1s and 0s to display on the 8x8
 byte* getDigitArray(int digit) {
   switch (digit) {
     case 0: return zero;
