@@ -1,17 +1,19 @@
-#include <Adafruit_LiquidCrystal.h> //Library of commands for LCD 
-
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
 
 const int irSensorPin = 9; // Connect the IR sensor output to digital pin 9
 bool lastState = LOW; // create a variable "lastState" to record the last reading from the IR sensor
 
 int counter = 0; // create a variable "counter" that will tell us how many times the IR sensor has been triggered
 
-Adafruit_LiquidCrystal lcd_1(0); // Since we are using the LCD from Adafruit we need to "make" an object that is the LCD
+LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 void setup()
 {
-  lcd_1.begin(16, 2); // Tells the lcd that it is 16 characters and two rows in size
-  lcd_1.print("IR Sensor"); // Prints "IR Sensor" on the first row of the LCD
+  lcd.begin(16, 2); // Tells the lcd that it is 16 characters and two rows in size
+    lcd.backlight();
+
+  lcd.print("IR Sensor"); // Prints "IR Sensor" on the first row of the LCD
   Serial.begin(9600); // Start serial communication for debugging
   Serial.println("IR Sensor "); //Prints "IR Sensor" to the serial monitor for debugging
   
@@ -28,9 +30,9 @@ void loop()
 
   // Check for state change from LOW to HIGH
   if (currentState == HIGH && lastState == LOW) {
-  lcd_1.setCursor(0, 1); // Put the cursor at character 0 and row 1 (the 2nd row - the first row is 0)
-  lcd_1.print(counter); // Display the "counter" on the LCD
-  lcd_1.setBacklight(1); // Set the brightness to max
+  lcd.setCursor(0, 1); // Put the cursor at character 0 and row 1 (the 2nd row - the first row is 0)
+  lcd.print(counter); // Display the "counter" on the LCD
+  lcd.setBacklight(1); // Set the brightness to max
     
   // Display the information on the serial monitor for debugging  
   Serial.print("Object detected! Current count: "); // 
