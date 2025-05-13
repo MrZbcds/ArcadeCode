@@ -3,6 +3,13 @@
 int DIN = 4;
 int CS =  3;
 int CLK = 2;
+/* 
+8x8      Arduino    
+VCC -->  5V pin 
+GND -->  GND
+other pins as specified
+*/
+
 int tens;
 int units;
 int count = 20; // Start at 20
