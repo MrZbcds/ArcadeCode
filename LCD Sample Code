@@ -1,0 +1,38 @@
+
+#include <Adafruit_LiquidCrystal.h>
+
+/* Watch this video to add the LCD library to your Arduino Program: 
+
+https://www.loom.com/share/2802b23d03d14ec19e8cb5b51412e87c?sid=fca62509-9a14-40ca-9501-c7507d831a97
+
+Without adding this library, your code won't compile!!!
+
+Wiring:
+Arduino      LCD
+GND          GND
+5V           VCC
+SDA          A4
+SCL          A5
+
+*/
+
+int seconds = 0;
+
+Adafruit_LiquidCrystal lcd_1(0);
+
+
+void setup()
+{
+  lcd_1.begin(16, 2);
+
+  lcd_1.print("hello world");
+}
+
+void loop()
+{
+  lcd_1.setCursor(0, 1);
+  lcd_1.print(seconds);
+  lcd_1.setBacklight(1);
+  delay(1000); // Wait for 500 millisecond(s)
+  seconds += 1;
+}
