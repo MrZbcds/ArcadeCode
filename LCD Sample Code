@@ -1,5 +1,7 @@
 
-#include <Adafruit_LiquidCrystal.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
 
 /* Watch this video to add the LCD library to your Arduino Program: 
 
@@ -16,9 +18,12 @@ SCL          A5
 
 */
 
-int seconds = 0;
+const int irSensorPin = 9; // Connect the IR sensor output to digital pin 9
+bool lastState = LOW; // create a variable "lastState" to record the last reading from the IR sensor
 
-Adafruit_LiquidCrystal lcd_1(0);
+LiquidCrystal_I2C lcd_1(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+
+int seconds = 0;
 
 
 void setup()
