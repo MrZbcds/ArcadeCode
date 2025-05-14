@@ -10,8 +10,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars
 
 void setup()
 {
-  lcd.begin(16, 2); // Tells the lcd that it is 16 characters and two rows in size
-    lcd.backlight();
+  lcd.init();    
+  lcd.backlight();
 
   lcd.print("IR Sensor"); // Prints "IR Sensor" on the first row of the LCD
   Serial.begin(9600); // Start serial communication for debugging
